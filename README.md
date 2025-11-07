@@ -17,7 +17,7 @@ A free, lightweight and customizable consent manager/cookie banner for websites,
 
 To use the Silktide Consent Manager, include the following files in your project:
 
-1. **JavaScript File**: `silktide-consent-manager.js`
+1. **JavaScript Module**: `silktide-consent-manager.js`
 2. **CSS File**: `silktide-consent-manager.css`
 
 You can either download these files and host them yourself.

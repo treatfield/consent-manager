@@ -1,6 +1,6 @@
 // Silktide Consent Manager - https://silktide.com/consent-manager/  
 
-class SilktideCookieBanner {
+export default class SilktideCookieBanner {
   constructor(config) {
     this.config = config; // Save config to the instance
 
@@ -784,63 +784,63 @@ class SilktideCookieBanner {
   }
 }
 
-(function () {
-  window.silktideCookieBannerManager = {};
+// (function () {
+//   window.silktideCookieBannerManager = {};
 
-  let config = {};
-  let cookieBanner;
+//   let config = {};
+//   let cookieBanner;
 
-  function updateCookieBannerConfig(userConfig = {}) {
-    config = {...config, ...userConfig};
+//   function updateCookieBannerConfig(userConfig = {}) {
+//     config = {...config, ...userConfig};
 
-    // If cookie banner exists, destroy and recreate it with new config
-    if (cookieBanner) {
-      cookieBanner.destroyCookieBanner(); // We'll need to add this method
-      cookieBanner = null;
-    }
+//     // If cookie banner exists, destroy and recreate it with new config
+//     if (cookieBanner) {
+//       cookieBanner.destroyCookieBanner(); // We'll need to add this method
+//       cookieBanner = null;
+//     }
 
-    // Only initialize if document.body exists
-    if (document.body) {
-      initCookieBanner();
-    } else {
-      // Wait for DOM to be ready
-      document.addEventListener('DOMContentLoaded', initCookieBanner, {once: true});
-    }
-  }
+//     // Only initialize if document.body exists
+//     if (document.body) {
+//       initCookieBanner();
+//     } else {
+//       // Wait for DOM to be ready
+//       document.addEventListener('DOMContentLoaded', initCookieBanner, {once: true});
+//     }
+//   }
 
-  function initCookieBanner() {
-    if (!cookieBanner) {
-      cookieBanner = new SilktideCookieBanner(config); // Pass config to the CookieBanner instance
-    }
-  }
+//   function initCookieBanner() {
+//     if (!cookieBanner) {
+//       cookieBanner = new SilktideCookieBanner(config); // Pass config to the CookieBanner instance
+//     }
+//   }
 
-  function injectScript(url, loadOption) {
-    // Check if script with this URL already exists
-    const existingScript = document.querySelector(`script[src="${url}"]`);
-    if (existingScript) {
-      return; // Script already exists, don't add it again
-    }
+//   function injectScript(url, loadOption) {
+//     // Check if script with this URL already exists
+//     const existingScript = document.querySelector(`script[src="${url}"]`);
+//     if (existingScript) {
+//       return; // Script already exists, don't add it again
+//     }
 
-    const script = document.createElement('script');
-    script.src = url;
+//     const script = document.createElement('script');
+//     script.src = url;
 
-    // Apply the async or defer attribute based on the loadOption parameter
-    if (loadOption === 'async') {
-      script.async = true;
-    } else if (loadOption === 'defer') {
-      script.defer = true;
-    }
+//     // Apply the async or defer attribute based on the loadOption parameter
+//     if (loadOption === 'async') {
+//       script.async = true;
+//     } else if (loadOption === 'defer') {
+//       script.defer = true;
+//     }
 
-    document.head.appendChild(script);
-  }
+//     document.head.appendChild(script);
+//   }
 
-  window.silktideCookieBannerManager.initCookieBanner = initCookieBanner;
-  window.silktideCookieBannerManager.updateCookieBannerConfig = updateCookieBannerConfig;
-  window.silktideCookieBannerManager.injectScript = injectScript;
+//   window.silktideCookieBannerManager.initCookieBanner = initCookieBanner;
+//   window.silktideCookieBannerManager.updateCookieBannerConfig = updateCookieBannerConfig;
+//   window.silktideCookieBannerManager.injectScript = injectScript;
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCookieBanner, {once: true});
-  } else {
-    initCookieBanner();
-  }
-})();
+//   if (document.readyState === 'loading') {
+//     document.addEventListener('DOMContentLoaded', initCookieBanner, {once: true});
+//   } else {
+//     initCookieBanner();
+//   }
+// })();

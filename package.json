@@ -1,0 +1,21 @@
+{
+  "name": "consent-manager",
+  "version": "2.0.0",
+  "description": "A free, lightweight and customizable consent manager/cookie banner for websites, designed to help you comply with GDPR and other privacy regulations.",
+  "main": "silktide-consent-manager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/treatfield/consent-manager.git"
+  },
+  "keywords": [],
+  "author": "Silktide",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/treatfield/consent-manager/issues"
+  },
+  "homepage": "https://github.com/treatfield/consent-manager#readme"
+}
