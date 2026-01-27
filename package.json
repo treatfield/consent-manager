@@ -1,6 +1,6 @@
 {
   "name": "consent-manager",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A free, lightweight and customizable consent manager/cookie banner for websites, designed to help you comply with GDPR and other privacy regulations.",
   "main": "silktide-consent-manager.js",
   "scripts": {

@@ -2,12 +2,15 @@
 
 A free, lightweight and customizable consent manager/cookie banner for websites, designed to help you comply with GDPR and other privacy regulations.
 
+This version has been reimagined as a **JavaScript Module (ESM)**, making it easy to integrate into modern web applications using tools like Webpack, Vite, or Rollup.
+
 [Learn more](https://silktide.com/consent-manager/) or [Configure it with our wizard](https://silktide.com/consent-manager/install/)
 
 ## Features
 
-- **Customizable Design**: Easily customize the appearance of the banner and modal to match your website's design.
-- **Multiple Positioning Options**: Choose from different positions for the banner and cookie icon (e.g., bottom-right, bottom-left, center).
+- **Standard JS Module**: Exported as an ES class for easy integration.
+- **Customizable Design**: Easily customize the appearance of the banner and modal.
+- **Multiple Positioning Options**: Choose from different positions for the banner and cookie icon.
 - **Granular Cookie Control**: Allow users to accept or reject different types of cookies (e.g., essential, analytics, marketing).
 - **Event Callbacks**: Trigger custom JavaScript functions when users accept or reject cookies.
 - **Accessibility**: Fully accessible with keyboard navigation and ARIA labels.
@@ -15,30 +18,33 @@ A free, lightweight and customizable consent manager/cookie banner for websites,
 
 ## Installation
 
-To use the Silktide Consent Manager, include the following files in your project:
+You can install the Silktide Consent Manager directly from GitHub using your package manager:
 
-1. **JavaScript Module**: `silktide-consent-manager.js`
-2. **CSS File**: `silktide-consent-manager.css`
+```bash
+npm install github:treatfield/consent-manager#v2.0.1
+```
 
-You can either download these files and host them yourself.
+## Usage
 
-### Example HTML
+### 1. Import the Module and CSS
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Website</title>
-  <link rel="stylesheet" href="path/to/silktide-consent-manager.css">
-</head>
-<body>
-  <script src="path/to/silktide-consent-manager.js"></script>
-  <script>
-    // Initialize the consent manager with your configuration
-    silktideCookieBannerManager.updateCookieBannerConfig({
-      cookieTypes: [
+Import the library and its styles into your project:
+
+```javascript
+import SilktideCookieBanner from "consent-manager";
+import "consent-manager/silktide-consent-manager.css";
+```
+
+### 2. Initialization
+
+Initialize the consent manager by creating a new instance of the `SilktideCookieBanner` class with your configuration.
+
+It is recommended to wrap the initialization in a check for `document.body` or use a `DOMContentLoaded` listener to ensure the DOM is ready:
+
+```javascript
+const initializeConsentManager = () => {
+  const config = {
+    cookieTypes: [
         {
           id: 'essential',
           name: 'Essential Cookies',
@@ -70,8 +76,8 @@ You can either download these files and host them yourself.
             console.log('Marketing cookies rejected');
           },
         },
-      ],
-      text: {
+    ],
+    text: {
         banner: {
           description: `<p>We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies.</p>`,
           acceptAllButtonText: 'Accept all',
@@ -87,24 +93,30 @@ You can either download these files and host them yourself.
           creditLinkText: 'Get this banner for free',
           creditLinkAccessibleLabel: 'Get this banner for free',
         },
-      },
-      position: {
+    },
+    position: {
         banner: 'bottomRight', // Options: 'bottomRight', 'bottomLeft', 'center', 'bottomCenter'
         cookieIcon: 'bottomLeft', // Options: 'bottomRight', 'bottomLeft'
-      },
-    });
-  </script>
-</body>
-</html>
+    },
+  new SilktideCookieBanner(config);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeConsentManager, {
+    once: true,
+  });
+} else {
+  initializeConsentManager();
+}
 ```
 
 ## Configuration Options
 
-The consent manager can be customized using the following configuration options:
+The `SilktideCookieBanner` constructor accepts a configuration object with the following properties:
 
-### `cookieTypes`
+### `cookieTypes` (Array)
 
-An array of objects defining the different types of cookies. Each object should include:
+An array of objects defining the different types of cookies. Each object includes:
 
 - `id`: A unique identifier for the cookie type
 - `name`: The name of the cookie type (displayed to the user)
@@ -119,6 +131,7 @@ An array of objects defining the different types of cookies. Each object should 
 An object containing text strings used in the banner and preferences modal:
 
 #### `banner`
+
 - `description`: Main text content for the banner
 - `acceptAllButtonText`: Text for the accept all button
 - `acceptAllButtonAccessibleLabel`: Accessibility label for accept all button
@@ -128,6 +141,7 @@ An object containing text strings used in the banner and preferences modal:
 - `preferencesButtonAccessibleLabel`: Accessibility label for preferences button
 
 #### `preferences`
+
 - `title`: Title text for the preferences modal
 - `description`: Description text for the preferences modal
 - `creditLinkText`: Text for the credit link
@@ -145,29 +159,72 @@ An object defining the position of the banner and cookie icon:
 - `onAcceptAll`: A callback function triggered when the user clicks "Accept All"
 - `onRejectAll`: A callback function triggered when the user clicks "Reject Non-Essential"
 
+## Advanced Usage: Extending the Class
+
+For more advanced integrations (e.g., synchronizing with a backend, deep GTM/dataLayer customization, or custom DOM manipulation), you can extend the `SilktideCookieBanner` class.
+
+This allows you to override internal methods and tap into the lifecycle of the banner.
+
+```javascript
+import SilktideCookieBanner from "consent-manager";
+
+class MyConsentManager extends SilktideCookieBanner {
+  constructor(config) {
+    // Wrap or modify the config before passing it to super
+    const wrappedConfig = {
+      ...config,
+      onAcceptAll: () => {
+        console.log("Custom global logic for Accept All");
+        if (config.onAcceptAll) config.onAcceptAll();
+      },
+    };
+
+    super(wrappedConfig);
+  }
+
+  // Override methods to customize internal behavior
+  // For example, modify the banner HTML before it is rendered
+  getBannerContent() {
+    let content = super.getBannerContent();
+    // Use DOMParser or regex to modify 'content'
+    return content;
+  }
+
+  // Override to add custom logic when the modal is toggled
+  toggleModal(show) {
+    console.log("Modal visibility changed to:", show);
+    super.toggleModal(show);
+  }
+}
+
+const manager = new MyConsentManager(myConfig);
+```
 
 ## Styling
-The consent manager comes with a default set of styles, but you can easily customize them by overriding the CSS variables at the top of the `silktide-consent-manager.css` file.
+
+The consent manager comes with a default set of styles, but you can easily customize them by overriding the CSS variables in your own stylesheets.
 
 The following variables are scoped to `#silktide-wrapper` to prevent them from being overridden by styles coming from the site the consent manager is used on:
 
 ```css
---focus: 0 0 0 2px #ffffff, 0 0 0 4px #000000, 0 0 0 6px #ffffff;
---boxShadow: -5px 5px 10px 0px #00000012, 0px 0px 50px 0px #0000001a;
---fontFamily: Helvetica Neue, Segoe UI, Arial, sans-serif;
---primaryColor: #533BE2; /* Primary color for buttons and links */
---backgroundColor: #FFFFFF; /* Background color for the banner and modal */
---textColor: #253B48; /* Text color */
---backdropBackgroundColor: #00000033; /* Backdrop background color */
---backdropBackgroundBlur: 0px; /* Backdrop blur effect amount */
---cookieIconColor: #533BE2; /* Cookie icon color */
---cookieIconBackgroundColor: #FFFFFF; /* Cookie icon background color */
+#silktide-wrapper {
+  --focus: 0 0 0 2px #ffffff, 0 0 0 4px #000000, 0 0 0 6px #ffffff;
+  --boxShadow: -5px 5px 10px 0px #00000012, 0px 0px 50px 0px #0000001a;
+  --fontFamily: Helvetica Neue, Segoe UI, Arial, sans-serif;
+  --primaryColor: #533be2; /* Primary color for buttons and links */
+  --backgroundColor: #ffffff; /* Background color for the banner and modal */
+  --textColor: #253b48; /* Text color */
+  --backdropBackgroundColor: #00000033; /* Backdrop background color */
+  --backdropBackgroundBlur: 0px; /* Backdrop blur effect amount */
+  --cookieIconColor: #533be2; /* Cookie icon color */
+  --cookieIconBackgroundColor: #ffffff; /* Cookie icon background color */
+}
 ```
 
 ## License
+
 This project is licensed under the [MIT License](./LICENSE).
 
 ## Contributing
-Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or fork this repository and submit a pull request.
 
-Thank you for using the Silktide Consent Manager! We hope it helps you manage cookie consent on your website effectively.
+Contributions are welcome! Please open an issue or submit a pull request on GitHub.
